@@ -6,15 +6,11 @@ export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>('dark');
 
   useEffect(() => {
-    // Load saved theme from localStorage
+    // Load saved theme from localStorage, default to dark if not found
     const savedTheme = localStorage.getItem('sleep-app-theme') as Theme;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      applyTheme(savedTheme);
-    } else {
-      // Default to dark theme
-      applyTheme('dark');
-    }
+    const initialTheme = savedTheme || 'dark';
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
   }, []);
 
   const applyTheme = (newTheme: Theme) => {
@@ -27,7 +23,7 @@ export const useTheme = () => {
       root.classList.add('light');
       body.className = 'bg-slate-50 transition-colors duration-300';
     } else {
-      // Dark theme classes
+      // Dark theme classes (default)
       root.classList.remove('light');
       root.classList.add('dark');
       body.className = 'bg-slate-950 transition-colors duration-300';

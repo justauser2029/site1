@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, CheckCircle, Play, Clock, BookOpen, ArrowRight } from 'lucide-react';
 import { modules } from '../../data/modules';
 import { useProgress } from '../../hooks/useProgress';
+import { useTheme } from '../../hooks/useTheme';
 import VideoPlayer from '../UI/VideoPlayer';
 
 interface ModuleProps {
@@ -14,6 +15,7 @@ interface ModuleProps {
 const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBack, onSelectModule }) => {
   const module = modules.find(m => m.id === moduleId);
   const { getModuleProgress, updateProgress } = useProgress();
+  const { isDark } = useTheme();
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(initialLessonIndex);
   const videoPlayerRef = useRef<HTMLDivElement>(null);
   const nextModuleButtonRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,9 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
   if (!module) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-white">Módulo não encontrado</p>
+        <p className={`transition-colors duration-300 ${
+          isDark ? 'text-white' : 'text-slate-900'
+        }`}>Módulo não encontrado</p>
       </div>
     );
   }
@@ -158,22 +162,36 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? 'bg-slate-950' : 'bg-slate-50'
+    }`}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+      <header className={`sticky top-0 z-40 backdrop-blur-sm border-b transition-colors duration-300 ${
+        isDark 
+          ? 'bg-slate-900/95 border-slate-800' 
+          : 'bg-white/95 border-slate-200'
+      }`}>
         <div className="px-6 py-4">
           <div className="flex items-center gap-4">
             <button
               onClick={onBack}
-              className="p-2 hover:bg-slate-800 rounded-full transition-colors"
+              className={`p-2 rounded-full transition-colors ${
+                isDark 
+                  ? 'hover:bg-slate-800 text-white' 
+                  : 'hover:bg-slate-100 text-slate-900'
+              }`}
             >
-              <ArrowLeft className="w-5 h-5 text-white" />
+              <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="flex-1">
-              <h1 className="text-lg font-bold text-white line-clamp-1">
+              <h1 className={`text-lg font-bold line-clamp-1 transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
                 {module.title}
               </h1>
-              <div className="flex items-center gap-4 text-sm text-slate-400">
+              <div className={`flex items-center gap-4 text-sm transition-colors duration-300 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`}>
                 <div className="flex items-center gap-1">
                   <Play className="w-4 h-4" />
                   <span>{module.lessons.length} aulas</span>
@@ -189,14 +207,20 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
       </header>
 
       {/* Progress Bar */}
-      <div className="px-6 py-4 bg-slate-900/50">
-        <div className="bg-slate-800 rounded-full h-2 mb-2">
+      <div className={`px-6 py-4 transition-colors duration-300 ${
+        isDark ? 'bg-slate-900/50' : 'bg-slate-100/50'
+      }`}>
+        <div className={`rounded-full h-2 mb-2 transition-colors duration-300 ${
+          isDark ? 'bg-slate-800' : 'bg-slate-200'
+        }`}>
           <div
             className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${completionPercentage}%` }}
           />
         </div>
-        <p className="text-sm text-slate-400 text-center">
+        <p className={`text-sm text-center transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-slate-600'
+        }`}>
           {completedLessons} de {module.lessons.length} aulas concluídas
         </p>
       </div>
@@ -221,7 +245,9 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
 
         {/* Lessons List */}
         <div className="space-y-4 mb-8">
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>
             <BookOpen className="w-5 h-5" />
             Aulas do Módulo
           </h2>
@@ -233,7 +259,9 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
               className={`w-full p-4 rounded-xl border transition-all duration-200 ${
                 index === selectedLessonIndex
                   ? 'bg-emerald-500/20 border-emerald-500/50 text-white'
-                  : 'bg-slate-900/50 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                  : isDark
+                    ? 'bg-slate-900/50 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                    : 'bg-white/50 border-slate-200 text-slate-700 hover:bg-slate-100/50'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -243,7 +271,9 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
                       ? 'bg-emerald-500 text-slate-900'
                       : index === selectedLessonIndex
                       ? 'bg-emerald-500/30 text-emerald-400'
-                      : 'bg-slate-700 text-slate-400'
+                      : isDark
+                        ? 'bg-slate-700 text-slate-400'
+                        : 'bg-slate-200 text-slate-600'
                   }`}>
                     {index < completedLessons ? (
                       <CheckCircle className="w-4 h-4" />
@@ -264,7 +294,9 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
                     ? 'bg-emerald-500/20 text-emerald-400'
                     : index === selectedLessonIndex
                     ? 'bg-blue-500/20 text-blue-400'
-                    : 'bg-slate-700 text-slate-400'
+                    : isDark
+                      ? 'bg-slate-700 text-slate-400'
+                      : 'bg-slate-200 text-slate-600'
                 }`}>
                   {index < completedLessons ? 'Concluída' : index === selectedLessonIndex ? 'Assistindo' : 'Pendente'}
                 </div>
@@ -278,9 +310,13 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
           <div ref={nextModuleButtonRef} className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 rounded-2xl p-6 border border-emerald-500/30 text-center scroll-mt-32">
             <div className="flex items-center justify-center gap-2 mb-3">
               <CheckCircle className="w-6 h-6 text-emerald-400" />
-              <h3 className="text-lg font-bold text-white">Módulo Concluído!</h3>
+              <h3 className={`text-lg font-bold transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>Módulo Concluído!</h3>
             </div>
-            <p className="text-slate-300 text-sm mb-4">
+            <p className={`text-sm mb-4 transition-colors duration-300 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}>
               Parabéns! Você completou todas as aulas deste módulo.
             </p>
             <button
@@ -298,12 +334,18 @@ const Module: React.FC<ModuleProps> = ({ moduleId, initialLessonIndex = 0, onBac
           <div ref={congratulationsRef} className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 rounded-2xl p-6 border border-emerald-500/30 text-center scroll-mt-32">
             <div className="flex items-center justify-center gap-2 mb-3">
               <CheckCircle className="w-6 h-6 text-emerald-400" />
-              <h3 className="text-lg font-bold text-white">Parabéns!</h3>
+              <h3 className={`text-lg font-bold transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>Parabéns!</h3>
             </div>
-            <p className="text-slate-300 text-sm mb-4">
+            <p className={`text-sm mb-4 transition-colors duration-300 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}>
               Você completou todos os módulos do Sleep Protocol! 🎉
             </p>
-            <p className="text-slate-400 text-xs">
+            <p className={`text-xs transition-colors duration-300 ${
+              isDark ? 'text-slate-400' : 'text-slate-600'
+            }`}>
               Continue praticando as técnicas aprendidas para manter uma rotina de sono saudável.
             </p>
           </div>

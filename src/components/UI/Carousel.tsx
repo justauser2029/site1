@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Module } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 import ModuleCard from './ModuleCard';
 
 interface CarouselProps {
@@ -15,6 +16,7 @@ const Carousel: React.FC<CarouselProps> = ({ modules, onSelectModule }) => {
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (!isAutoPlaying || isDragging) return;
@@ -139,14 +141,22 @@ const Carousel: React.FC<CarouselProps> = ({ modules, onSelectModule }) => {
       {/* Navigation buttons */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-slate-800/80 hover:bg-slate-700 text-white p-2 rounded-full transition-colors duration-200 z-10 backdrop-blur-sm"
+        className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full transition-colors duration-200 z-10 backdrop-blur-sm ${
+          isDark 
+            ? 'bg-slate-800/80 hover:bg-slate-700 text-white' 
+            : 'bg-white/80 hover:bg-slate-100 text-slate-900'
+        }`}
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
       
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-800/80 hover:bg-slate-700 text-white p-2 rounded-full transition-colors duration-200 z-10 backdrop-blur-sm"
+        className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full transition-colors duration-200 z-10 backdrop-blur-sm ${
+          isDark 
+            ? 'bg-slate-800/80 hover:bg-slate-700 text-white' 
+            : 'bg-white/80 hover:bg-slate-100 text-slate-900'
+        }`}
       >
         <ChevronRight className="w-5 h-5" />
       </button>
@@ -157,10 +167,12 @@ const Carousel: React.FC<CarouselProps> = ({ modules, onSelectModule }) => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
+            className={`h-3 rounded-full transition-all duration-200 ${
               index === currentIndex
                 ? 'bg-emerald-500 w-8'
-                : 'bg-slate-600 hover:bg-slate-500'
+                : isDark
+                  ? 'bg-slate-600 hover:bg-slate-500 w-3'
+                  : 'bg-slate-300 hover:bg-slate-400 w-3'
             }`}
           />
         ))}

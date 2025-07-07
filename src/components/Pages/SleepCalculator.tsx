@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Clock, Moon, Sun, Info, Calculator, Lightbulb, ChevronDown } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 
 interface SleepCalculatorProps {
   onBack: () => void;
@@ -18,6 +19,7 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
     preparationTime?: string;
     totalSleep?: string;
   } | null>(null);
+  const { isDark } = useTheme();
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
@@ -97,20 +99,32 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? 'bg-slate-950' : 'bg-slate-50'
+    }`}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+      <header className={`sticky top-0 z-40 backdrop-blur-sm border-b transition-colors duration-300 ${
+        isDark 
+          ? 'bg-slate-900/95 border-slate-800' 
+          : 'bg-white/95 border-slate-200'
+      }`}>
         <div className="px-6 py-4">
           <div className="flex items-center gap-4">
             <button
               onClick={onBack}
-              className="p-2 hover:bg-slate-800 rounded-full transition-colors"
+              className={`p-2 rounded-full transition-colors ${
+                isDark 
+                  ? 'hover:bg-slate-800 text-white' 
+                  : 'hover:bg-slate-100 text-slate-900'
+              }`}
             >
-              <ArrowLeft className="w-5 h-5 text-white" />
+              <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-3">
               <Calculator className="w-6 h-6 text-emerald-400" />
-              <h1 className="text-xl font-bold text-white">Calculadora de Sono</h1>
+              <h1 className={`text-xl font-bold transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>Calculadora de Sono</h1>
             </div>
           </div>
         </div>
@@ -118,12 +132,20 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
 
       <div className="px-6 py-6 max-w-md mx-auto">
         {/* Info Section */}
-        <div className="bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border border-emerald-500/30 rounded-2xl p-6 mb-8">
+        <div className={`border rounded-2xl p-6 mb-8 transition-colors duration-300 ${
+          isDark 
+            ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/30' 
+            : 'bg-gradient-to-r from-emerald-100/50 to-emerald-200/50 border-emerald-200'
+        }`}>
           <div className="flex items-start gap-3 mb-4">
             <Info className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
             <div>
-              <h2 className="text-lg font-bold text-white mb-2">Como Funciona</h2>
-              <p className="text-slate-300 text-sm leading-relaxed">
+              <h2 className={`text-lg font-bold mb-2 transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>Como Funciona</h2>
+              <p className={`text-sm leading-relaxed transition-colors duration-300 ${
+                isDark ? 'text-slate-300' : 'text-slate-700'
+              }`}>
                 Escolha a hora em que deseja acordar ou dormir e descubra a melhor hora para 
                 completar 5 ciclos de sono reparador. Cada ciclo dura 90 minutos.
               </p>
@@ -133,7 +155,9 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
 
         {/* Calculation Type */}
         <div className="mb-8">
-          <h3 className="text-lg font-bold text-white mb-4">O que você quer calcular?</h3>
+          <h3 className={`text-lg font-bold mb-4 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>O que você quer calcular?</h3>
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => {
@@ -143,7 +167,9 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
               className={`p-4 rounded-xl border transition-all duration-200 ${
                 calculationType === 'wakeup'
                   ? 'bg-emerald-500/20 border-emerald-500/50 text-white'
-                  : 'bg-slate-900/50 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                  : isDark
+                    ? 'bg-slate-900/50 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                    : 'bg-white/50 border-slate-200 text-slate-700 hover:bg-slate-100/50'
               }`}
             >
               <Moon className="w-6 h-6 mx-auto mb-2" />
@@ -159,7 +185,9 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
               className={`p-4 rounded-xl border transition-all duration-200 ${
                 calculationType === 'bedtime'
                   ? 'bg-emerald-500/20 border-emerald-500/50 text-white'
-                  : 'bg-slate-900/50 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                  : isDark
+                    ? 'bg-slate-900/50 border-slate-800 text-slate-300 hover:bg-slate-800/50'
+                    : 'bg-white/50 border-slate-200 text-slate-700 hover:bg-slate-100/50'
               }`}
             >
               <Sun className="w-6 h-6 mx-auto mb-2" />
@@ -171,14 +199,20 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
 
         {/* Time Input */}
         <div className="mb-8">
-          <label className="block text-white font-medium mb-4">
+          <label className={`block font-medium mb-4 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>
             {calculationType === 'wakeup' 
               ? 'Que horas você precisa acordar?' 
               : 'Que horas você vai dormir?'
             }
           </label>
           
-          <div className="bg-slate-900 border border-slate-700 rounded-xl p-4">
+          <div className={`border rounded-xl p-4 transition-colors duration-300 ${
+            isDark 
+              ? 'bg-slate-900 border-slate-700' 
+              : 'bg-white border-slate-300'
+          }`}>
             <div className="flex items-center justify-center gap-4">
               {/* Hour Picker */}
               <div className="relative">
@@ -187,16 +221,28 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
                     setShowHourPicker(!showHourPicker);
                     setShowMinutePicker(false);
                   }}
-                  className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-4 py-3 rounded-lg transition-colors"
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-colors ${
+                    isDark 
+                      ? 'bg-slate-800 hover:bg-slate-700' 
+                      : 'bg-slate-100 hover:bg-slate-200'
+                  }`}
                 >
-                  <span className="text-2xl font-bold text-white min-w-[3rem] text-center">
+                  <span className={`text-2xl font-bold min-w-[3rem] text-center transition-colors duration-300 ${
+                    isDark ? 'text-white' : 'text-slate-900'
+                  }`}>
                     {selectedHour.toString().padStart(2, '0')}
                   </span>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                  <ChevronDown className={`w-4 h-4 transition-colors duration-300 ${
+                    isDark ? 'text-slate-400' : 'text-slate-600'
+                  }`} />
                 </button>
                 
                 {showHourPicker && (
-                  <div className="absolute top-full left-0 mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+                  <div className={`absolute top-full left-0 mt-2 border rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto transition-colors duration-300 ${
+                    isDark 
+                      ? 'bg-slate-800 border-slate-700' 
+                      : 'bg-white border-slate-200'
+                  }`}>
                     {hours.map((hour) => (
                       <button
                         key={hour}
@@ -205,8 +251,12 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
                           setShowHourPicker(false);
                           setResults(null);
                         }}
-                        className={`w-full px-4 py-2 text-left hover:bg-slate-700 transition-colors ${
-                          selectedHour === hour ? 'bg-emerald-500/20 text-emerald-400' : 'text-white'
+                        className={`w-full px-4 py-2 text-left transition-colors ${
+                          selectedHour === hour 
+                            ? 'bg-emerald-500/20 text-emerald-400' 
+                            : isDark
+                              ? 'text-white hover:bg-slate-700'
+                              : 'text-slate-900 hover:bg-slate-100'
                         }`}
                       >
                         {hour.toString().padStart(2, '0')}h
@@ -216,7 +266,9 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
                 )}
               </div>
 
-              <span className="text-2xl font-bold text-slate-400">:</span>
+              <span className={`text-2xl font-bold transition-colors duration-300 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`}>:</span>
 
               {/* Minute Picker */}
               <div className="relative">
@@ -225,16 +277,28 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
                     setShowMinutePicker(!showMinutePicker);
                     setShowHourPicker(false);
                   }}
-                  className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-4 py-3 rounded-lg transition-colors"
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-colors ${
+                    isDark 
+                      ? 'bg-slate-800 hover:bg-slate-700' 
+                      : 'bg-slate-100 hover:bg-slate-200'
+                  }`}
                 >
-                  <span className="text-2xl font-bold text-white min-w-[3rem] text-center">
+                  <span className={`text-2xl font-bold min-w-[3rem] text-center transition-colors duration-300 ${
+                    isDark ? 'text-white' : 'text-slate-900'
+                  }`}>
                     {selectedMinute.toString().padStart(2, '0')}
                   </span>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                  <ChevronDown className={`w-4 h-4 transition-colors duration-300 ${
+                    isDark ? 'text-slate-400' : 'text-slate-600'
+                  }`} />
                 </button>
                 
                 {showMinutePicker && (
-                  <div className="absolute top-full left-0 mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+                  <div className={`absolute top-full left-0 mt-2 border rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto transition-colors duration-300 ${
+                    isDark 
+                      ? 'bg-slate-800 border-slate-700' 
+                      : 'bg-white border-slate-200'
+                  }`}>
                     {minutes.map((minute) => (
                       <button
                         key={minute}
@@ -243,8 +307,12 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
                           setShowMinutePicker(false);
                           setResults(null);
                         }}
-                        className={`w-full px-4 py-2 text-left hover:bg-slate-700 transition-colors ${
-                          selectedMinute === minute ? 'bg-emerald-500/20 text-emerald-400' : 'text-white'
+                        className={`w-full px-4 py-2 text-left transition-colors ${
+                          selectedMinute === minute 
+                            ? 'bg-emerald-500/20 text-emerald-400' 
+                            : isDark
+                              ? 'text-white hover:bg-slate-700'
+                              : 'text-slate-900 hover:bg-slate-100'
                         }`}
                       >
                         {minute.toString().padStart(2, '0')}min
@@ -256,7 +324,9 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
             </div>
             
             <div className="text-center mt-3">
-              <div className="text-slate-400 text-sm">
+              <div className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`}>
                 Horário selecionado: <span className="text-emerald-400 font-medium">
                   {formatTime(selectedHour, selectedMinute)}
                 </span>
@@ -267,7 +337,9 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
 
         {/* Cycles Selection */}
         <div className="mb-8">
-          <label className="block text-white font-medium mb-4">Quantos ciclos de sono?</label>
+          <label className={`block font-medium mb-4 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>Quantos ciclos de sono?</label>
           <div className="space-y-3">
             {cycleOptions.map((option) => (
               <button
@@ -279,18 +351,26 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
                 className={`w-full p-4 rounded-xl border transition-all duration-200 text-left ${
                   cycles === option.value
                     ? 'bg-emerald-500/20 border-emerald-500/50'
-                    : 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/50'
+                    : isDark
+                      ? 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/50'
+                      : 'bg-white/50 border-slate-200 hover:bg-slate-100/50'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-white font-medium">{option.label} ({option.duration})</div>
-                    <div className="text-slate-400 text-sm">{option.description}</div>
+                    <div className={`font-medium transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>{option.label} ({option.duration})</div>
+                    <div className={`text-sm transition-colors duration-300 ${
+                      isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`}>{option.description}</div>
                   </div>
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                     cycles === option.value
                       ? 'border-emerald-500 bg-emerald-500'
-                      : 'border-slate-600'
+                      : isDark
+                        ? 'border-slate-600'
+                        : 'border-slate-300'
                   }`}>
                     {cycles === option.value && (
                       <div className="w-2 h-2 rounded-full bg-slate-900"></div>
@@ -303,12 +383,18 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
         </div>
 
         {/* Guidance Text */}
-        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-8">
+        <div className={`border rounded-xl p-4 mb-8 transition-colors duration-300 ${
+          isDark 
+            ? 'bg-blue-500/10 border-blue-500/30' 
+            : 'bg-blue-50 border-blue-200'
+        }`}>
           <div className="flex items-start gap-3">
             <Clock className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
             <div>
               <div className="text-blue-400 font-medium mb-1">Como usar</div>
-              <div className="text-slate-300 text-sm">
+              <div className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-slate-300' : 'text-slate-700'
+              }`}>
                 {calculationType === 'wakeup' 
                   ? 'Defina a hora que você precisa acordar e descubra quando deve ir dormir para completar ciclos completos de sono.'
                   : 'Defina a hora que você pretende dormir e descubra quando deve acordar para completar ciclos completos de sono.'
@@ -329,20 +415,32 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
 
         {/* Results */}
         {results && (
-          <div id="results-section" className="bg-slate-900/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-800 mb-8">
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+          <div id="results-section" className={`backdrop-blur-sm rounded-2xl p-6 border mb-8 transition-colors duration-300 ${
+            isDark 
+              ? 'bg-slate-900/50 border-slate-800' 
+              : 'bg-white/50 border-slate-200'
+          }`}>
+            <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 transition-colors duration-300 ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}>
               <Lightbulb className="w-5 h-5 text-emerald-400" />
               Seu Horário Ideal
             </h3>
             
             <div className="space-y-4">
               {/* Preparation Time Card */}
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+              <div className={`border rounded-xl p-4 transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-amber-500/10 border-amber-500/30' 
+                  : 'bg-amber-50 border-amber-200'
+              }`}>
                 <div className="flex items-start gap-3">
                   <Clock className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <div className="text-amber-400 font-medium mb-1">💡 Hora de Preparação</div>
-                    <div className="text-slate-300 text-sm">
+                    <div className={`text-sm transition-colors duration-300 ${
+                      isDark ? 'text-slate-300' : 'text-slate-700'
+                    }`}>
                       Vá para a cama às <span className="font-bold text-amber-400">{results.preparationTime}</span> 
                       para relaxar e adormecer naturalmente.
                     </div>
@@ -351,36 +449,56 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
               </div>
 
               {/* Sleep Time Card */}
-              <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className={`flex items-center justify-between p-4 rounded-xl border transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-slate-800/50 border-slate-700' 
+                  : 'bg-slate-100/50 border-slate-200'
+              }`}>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center">
                     <Moon className="w-6 h-6 text-emerald-400" />
                   </div>
                   <div>
-                    <div className="text-white font-medium">Hora de Dormir</div>
-                    <div className="text-slate-400 text-sm">Início do sono</div>
+                    <div className={`font-medium transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>Hora de Dormir</div>
+                    <div className={`text-sm transition-colors duration-300 ${
+                      isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`}>Início do sono</div>
                   </div>
                 </div>
                 <div className="text-emerald-400 font-bold text-2xl">{results.bedtime}</div>
               </div>
 
               {/* Wake Time Card */}
-              <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className={`flex items-center justify-between p-4 rounded-xl border transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-slate-800/50 border-slate-700' 
+                  : 'bg-slate-100/50 border-slate-200'
+              }`}>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
                     <Sun className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
-                    <div className="text-white font-medium">Hora de Acordar</div>
-                    <div className="text-slate-400 text-sm">Fim do sono</div>
+                    <div className={`font-medium transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>Hora de Acordar</div>
+                    <div className={`text-sm transition-colors duration-300 ${
+                      isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`}>Fim do sono</div>
                   </div>
                 </div>
                 <div className="text-blue-400 font-bold text-2xl">{results.wakeup}</div>
               </div>
 
               {/* Summary */}
-              <div className="text-center pt-4 border-t border-slate-700">
-                <div className="text-slate-400 text-sm">
+              <div className={`text-center pt-4 border-t transition-colors duration-300 ${
+                isDark ? 'border-slate-700' : 'border-slate-200'
+              }`}>
+                <div className={`text-sm transition-colors duration-300 ${
+                  isDark ? 'text-slate-400' : 'text-slate-600'
+                }`}>
                   Total de sono: <span className="text-emerald-400 font-medium">{results.totalSleep}</span> • 
                   <span className="text-emerald-400 font-medium"> {cycles} ciclos completos</span>
                 </div>
@@ -390,9 +508,17 @@ const SleepCalculator: React.FC<SleepCalculatorProps> = ({ onBack }) => {
         )}
 
         {/* Tips Section */}
-        <div className="bg-slate-900/30 rounded-2xl p-6 border border-slate-800">
-          <h3 className="text-lg font-bold text-white mb-4">💤 Dicas para Melhor Sono</h3>
-          <div className="space-y-3 text-sm text-slate-300">
+        <div className={`rounded-2xl p-6 border transition-colors duration-300 ${
+          isDark 
+            ? 'bg-slate-900/30 border-slate-800' 
+            : 'bg-slate-100/30 border-slate-200'
+        }`}>
+          <h3 className={`text-lg font-bold mb-4 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>💤 Dicas para Melhor Sono</h3>
+          <div className={`space-y-3 text-sm transition-colors duration-300 ${
+            isDark ? 'text-slate-300' : 'text-slate-700'
+          }`}>
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
               <p>Mantenha um horário consistente, mesmo nos fins de semana</p>

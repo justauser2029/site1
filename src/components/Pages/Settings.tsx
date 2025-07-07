@@ -11,13 +11,18 @@ const Settings: React.FC = () => {
       title: 'Conta',
       items: [
         { id: 'profile', label: 'Perfil', icon: User, action: 'navigate' },
-        { id: 'notifications', label: 'Notificações', icon: Bell, action: 'toggle', value: notifications, setValue: setNotifications },
+        { id: 'notifications', label: 'Notificações', icon: Bell, action: 'toggle', value: notifications, setValue: setNotifications }
+      ]
+    },
+    {
+      title: 'Aparência',
+      items: [
         { 
           id: 'theme', 
-          label: isDark ? 'Modo Claro' : 'Modo Escuro', 
-          icon: isDark ? Sun : Moon, 
-          action: 'theme-toggle',
-          tooltip: 'Mude entre o modo escuro e claro para personalizar a sua experiência visual.'
+          label: 'Tema do Aplicativo', 
+          icon: isDark ? Moon : Sun, 
+          action: 'theme-slider',
+          description: 'Escolha entre modo escuro e claro'
         }
       ]
     },
@@ -117,25 +122,34 @@ const Settings: React.FC = () => {
               {group.items.map((item, itemIndex) => (
                 <div
                   key={item.id}
-                  className={`flex items-center justify-between p-4 transition-colors cursor-pointer group ${
+                  className={`flex items-center justify-between p-4 transition-colors ${
                     itemIndex !== group.items.length - 1 
                       ? isDark 
                         ? 'border-b border-slate-800' 
                         : 'border-b border-slate-200'
                       : ''
                   } ${
-                    isDark 
-                      ? 'hover:bg-slate-800/50' 
-                      : 'hover:bg-slate-100/50'
+                    item.action !== 'theme-slider' 
+                      ? isDark 
+                        ? 'hover:bg-slate-800/50 cursor-pointer' 
+                        : 'hover:bg-slate-100/50 cursor-pointer'
+                      : ''
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className={`w-5 h-5 transition-colors duration-300 ${
                       isDark ? 'text-slate-400' : 'text-slate-600'
                     }`} />
-                    <span className={`font-medium transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-slate-900'
-                    }`}>{item.label}</span>
+                    <div>
+                      <span className={`font-medium transition-colors duration-300 block ${
+                        isDark ? 'text-white' : 'text-slate-900'
+                      }`}>{item.label}</span>
+                      {item.description && (
+                        <span className={`text-sm transition-colors duration-300 ${
+                          isDark ? 'text-slate-400' : 'text-slate-600'
+                        }`}>{item.description}</span>
+                      )}
+                    </div>
                   </div>
                   
                   {item.action === 'toggle' && item.setValue && (
@@ -153,46 +167,50 @@ const Settings: React.FC = () => {
                     </button>
                   )}
                   
-                  {item.action === 'theme-toggle' && (
-                    <div className="relative group/tooltip">
+                  {item.action === 'theme-slider' && (
+                    <div className="flex flex-col items-end gap-2">
+                      {/* Theme Slider */}
                       <button
                         onClick={toggleTheme}
-                        className={`relative flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
+                        className={`relative w-20 h-10 rounded-full border-2 transition-all duration-300 overflow-hidden ${
                           isDark 
-                            ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30' 
-                            : 'bg-slate-700/20 text-slate-700 hover:bg-slate-700/30 border border-slate-300'
+                            ? 'bg-slate-800 border-slate-700' 
+                            : 'bg-slate-200 border-slate-300'
                         }`}
+                        title="Mude entre o modo escuro e claro para personalizar a sua experiência visual."
                       >
-                        {isDark ? (
-                          <>
-                            <Sun className="w-4 h-4" />
-                            <span>Modo Claro</span>
-                          </>
-                        ) : (
-                          <>
-                            <Moon className="w-4 h-4" />
-                            <span>Modo Escuro</span>
-                          </>
-                        )}
-                      </button>
-                      
-                      {/* Tooltip */}
-                      {item.tooltip && (
-                        <div className="absolute right-0 top-full mt-2 opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
-                          <div className={`text-sm px-3 py-2 rounded-lg whitespace-nowrap max-w-xs ${
-                            isDark 
-                              ? 'bg-slate-800/95 text-white border border-slate-700' 
-                              : 'bg-white/95 text-slate-900 border border-slate-200 shadow-lg'
-                          }`}>
-                            {item.tooltip}
-                            <div className={`absolute bottom-full right-4 w-0 h-0 ${
-                              isDark 
-                                ? 'border-b-4 border-b-slate-800/95 border-l-4 border-l-transparent border-r-4 border-r-transparent' 
-                                : 'border-b-4 border-b-white/95 border-l-4 border-l-transparent border-r-4 border-r-transparent'
-                            }`}></div>
+                        {/* Background gradient */}
+                        <div className="absolute inset-0 flex">
+                          <div className="w-1/2 bg-slate-800 flex items-center justify-center">
+                            <Moon className="w-4 h-4 text-slate-300" />
+                          </div>
+                          <div className="w-1/2 bg-slate-100 flex items-center justify-center">
+                            <Sun className="w-4 h-4 text-slate-700" />
                           </div>
                         </div>
-                      )}
+                        
+                        {/* Sliding indicator */}
+                        <div
+                          className={`absolute top-1 w-8 h-8 bg-white rounded-full shadow-lg transition-all duration-300 flex items-center justify-center border ${
+                            isDark 
+                              ? 'translate-x-1 border-slate-600' 
+                              : 'translate-x-11 border-slate-300'
+                          }`}
+                        >
+                          {isDark ? (
+                            <Moon className="w-4 h-4 text-slate-700" />
+                          ) : (
+                            <Sun className="w-4 h-4 text-amber-500" />
+                          )}
+                        </div>
+                      </button>
+                      
+                      {/* Current mode label */}
+                      <span className={`text-xs font-medium transition-colors duration-300 ${
+                        isDark ? 'text-slate-400' : 'text-slate-600'
+                      }`}>
+                        {isDark ? 'Modo Escuro' : 'Modo Claro'}
+                      </span>
                     </div>
                   )}
                   

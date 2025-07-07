@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Headphones, BookOpen, Brain, Gift, Star, ChevronRight, Calculator } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 import SleepCalculator from './SleepCalculator';
 
 const MoreContent: React.FC = () => {
   const [showSleepCalculator, setShowSleepCalculator] = useState(false);
+  const { isDark } = useTheme();
 
   const handleOpenSleepCalculator = () => {
     setShowSleepCalculator(true);
@@ -81,24 +83,40 @@ const MoreContent: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? 'bg-slate-950' : 'bg-slate-50'
+    }`}>
       {/* Header */}
-      <header className="px-6 py-8 bg-gradient-to-b from-slate-900/50 to-transparent">
+      <header className={`px-6 py-8 transition-colors duration-300 ${
+        isDark 
+          ? 'bg-gradient-to-b from-slate-900/50 to-transparent' 
+          : 'bg-gradient-to-b from-slate-100/50 to-transparent'
+      }`}>
         <div className="flex items-center gap-3 mb-2">
           <Star className="w-6 h-6 text-emerald-400" />
-          <h1 className="text-2xl font-bold text-white">Mais Conteúdos</h1>
+          <h1 className={`text-2xl font-bold transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>Mais Conteúdos</h1>
         </div>
-        <p className="text-slate-400">Recursos extras para aprimorar seu sono</p>
+        <p className={`transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-slate-600'
+        }`}>Recursos extras para aprimorar seu sono</p>
       </header>
 
       {/* Bonus Content */}
       <section className="px-6 mb-8">
-        <h2 className="text-lg font-bold text-white mb-4">Conteúdo Bônus</h2>
+        <h2 className={`text-lg font-bold mb-4 transition-colors duration-300 ${
+          isDark ? 'text-white' : 'text-slate-900'
+        }`}>Conteúdo Bônus</h2>
         <div className="space-y-4">
           {bonusContent.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-900/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer"
+              className={`backdrop-blur-sm rounded-2xl p-6 border transition-colors cursor-pointer ${
+                isDark 
+                  ? 'bg-slate-900/50 border-slate-800 hover:border-slate-700' 
+                  : 'bg-white/50 border-slate-200 hover:border-slate-300'
+              }`}
             >
               <div className="flex items-start gap-4">
                 <div className={`p-3 rounded-xl ${item.color}`}>
@@ -107,21 +125,27 @@ const MoreContent: React.FC = () => {
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                    <h3 className={`text-lg font-bold transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>{item.title}</h3>
                     {item.badge && (
                       <span className="bg-emerald-500 text-slate-900 px-2 py-1 rounded-full text-xs font-bold">
                         {item.badge}
                       </span>
                     )}
                   </div>
-                  <p className="text-slate-400 text-sm mb-3">{item.description}</p>
+                  <p className={`text-sm mb-3 transition-colors duration-300 ${
+                    isDark ? 'text-slate-400' : 'text-slate-600'
+                  }`}>{item.description}</p>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1 text-emerald-400 text-sm">
                       <Star className="w-4 h-4" />
                       <span>Conteúdo premium</span>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                    <ChevronRight className={`w-5 h-5 transition-colors duration-300 ${
+                      isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`} />
                   </div>
                 </div>
               </div>
@@ -132,19 +156,29 @@ const MoreContent: React.FC = () => {
 
       {/* Resources */}
       <section className="px-6 mb-8">
-        <h2 className="text-lg font-bold text-white mb-4">Recursos Úteis</h2>
+        <h2 className={`text-lg font-bold mb-4 transition-colors duration-300 ${
+          isDark ? 'text-white' : 'text-slate-900'
+        }`}>Recursos Úteis</h2>
         <div className="grid grid-cols-2 gap-4">
           {resources.map((resource, index) => (
             <div
               key={index}
               onClick={resource.onClick}
-              className={`bg-slate-900/50 backdrop-blur-sm rounded-xl p-4 border border-slate-800 hover:border-slate-700 transition-colors ${
+              className={`backdrop-blur-sm rounded-xl p-4 border transition-colors ${
                 resource.onClick ? 'cursor-pointer' : 'cursor-default'
+              } ${
+                isDark 
+                  ? 'bg-slate-900/50 border-slate-800 hover:border-slate-700' 
+                  : 'bg-white/50 border-slate-200 hover:border-slate-300'
               }`}
             >
               <div className="text-2xl mb-2">{resource.icon}</div>
-              <h3 className="text-white font-medium mb-1">{resource.title}</h3>
-              <p className="text-slate-400 text-sm">{resource.description}</p>
+              <h3 className={`font-medium mb-1 transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>{resource.title}</h3>
+              <p className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`}>{resource.description}</p>
             </div>
           ))}
         </div>
@@ -152,11 +186,19 @@ const MoreContent: React.FC = () => {
 
       {/* Call to Action */}
       <section className="px-6 mb-8">
-        <div className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 rounded-2xl p-6 border border-emerald-500/30">
-          <h2 className="text-xl font-bold text-white mb-2">
+        <div className={`rounded-2xl p-6 border transition-colors duration-300 ${
+          isDark 
+            ? 'bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 border-emerald-500/30' 
+            : 'bg-gradient-to-r from-emerald-100/50 to-emerald-200/50 border-emerald-200'
+        }`}>
+          <h2 className={`text-xl font-bold mb-2 transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>
             Unlock Premium Content
           </h2>
-          <p className="text-slate-300 text-sm mb-4">
+          <p className={`text-sm mb-4 transition-colors duration-300 ${
+            isDark ? 'text-slate-300' : 'text-slate-700'
+          }`}>
             Acesse todos os recursos premium e acelere sua jornada para um sono perfeito.
           </p>
           <button className="bg-emerald-500 hover:bg-emerald-600 text-slate-900 px-6 py-3 rounded-xl font-bold transition-colors">
@@ -167,19 +209,37 @@ const MoreContent: React.FC = () => {
 
       {/* Help Section */}
       <section className="px-6 pb-8">
-        <h2 className="text-lg font-bold text-white mb-4">Precisa de Ajuda?</h2>
+        <h2 className={`text-lg font-bold mb-4 transition-colors duration-300 ${
+          isDark ? 'text-white' : 'text-slate-900'
+        }`}>Precisa de Ajuda?</h2>
         <div className="space-y-3">
-          <button className="w-full bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-left hover:bg-slate-800/50 transition-colors">
+          <button className={`w-full border rounded-xl p-4 text-left transition-colors ${
+            isDark 
+              ? 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/50' 
+              : 'bg-white/50 border-slate-200 hover:bg-slate-100/50'
+          }`}>
             <div className="flex items-center justify-between">
-              <span className="text-white font-medium">Central de Ajuda</span>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>Central de Ajuda</span>
+              <ChevronRight className={`w-5 h-5 transition-colors duration-300 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`} />
             </div>
           </button>
           
-          <button className="w-full bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-left hover:bg-slate-800/50 transition-colors">
+          <button className={`w-full border rounded-xl p-4 text-left transition-colors ${
+            isDark 
+              ? 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/50' 
+              : 'bg-white/50 border-slate-200 hover:bg-slate-100/50'
+          }`}>
             <div className="flex items-center justify-between">
-              <span className="text-white font-medium">Contato</span>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
+              <span className={`font-medium transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>Contato</span>
+              <ChevronRight className={`w-5 h-5 transition-colors duration-300 ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`} />
             </div>
           </button>
         </div>

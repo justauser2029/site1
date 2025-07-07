@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Play, CheckCircle, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Lesson } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 interface VideoPlayerProps {
   lesson: Lesson;
@@ -28,6 +29,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   isFirstModule = false
 }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     // Add YouTube API script
@@ -62,7 +64,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   };
 
   return (
-    <div className="bg-slate-900 rounded-xl overflow-hidden shadow-lg relative">
+    <div className={`rounded-xl overflow-hidden shadow-lg relative transition-colors duration-300 ${
+      isDark ? 'bg-slate-900' : 'bg-white'
+    }`}>
       <div className="aspect-video relative">
         <iframe
           ref={iframeRef}
@@ -86,9 +90,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               
               {/* Tooltip */}
               <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-slate-800/95 text-white text-sm px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm border border-slate-700">
+                <div className={`text-sm px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm border ${
+                  isDark 
+                    ? 'bg-slate-800/95 text-white border-slate-700' 
+                    : 'bg-white/95 text-slate-900 border-slate-200'
+                }`}>
                   {getPreviousArrowTooltip()}
-                  <div className="absolute right-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-r-4 border-r-slate-800/95 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+                  <div className={`absolute right-full top-1/2 transform -translate-y-1/2 w-0 h-0 ${
+                    isDark 
+                      ? 'border-r-4 border-r-slate-800/95 border-t-4 border-t-transparent border-b-4 border-b-transparent' 
+                      : 'border-r-4 border-r-white/95 border-t-4 border-t-transparent border-b-4 border-b-transparent'
+                  }`}></div>
                 </div>
               </div>
             </div>
@@ -108,9 +120,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               
               {/* Tooltip */}
               <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-slate-800/95 text-white text-sm px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm border border-slate-700">
+                <div className={`text-sm px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm border ${
+                  isDark 
+                    ? 'bg-slate-800/95 text-white border-slate-700' 
+                    : 'bg-white/95 text-slate-900 border-slate-200'
+                }`}>
                   {getNextArrowTooltip()}
-                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-slate-800/95 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+                  <div className={`absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 ${
+                    isDark 
+                      ? 'border-l-4 border-l-slate-800/95 border-t-4 border-t-transparent border-b-4 border-b-transparent' 
+                      : 'border-l-4 border-l-white/95 border-t-4 border-t-transparent border-b-4 border-b-transparent'
+                  }`}></div>
                 </div>
               </div>
             </div>
@@ -120,13 +140,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       
       <div className="p-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-bold text-white">{lesson.title}</h3>
+          <h3 className={`text-lg font-bold transition-colors duration-300 ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>{lesson.title}</h3>
           {lesson.completed && (
             <CheckCircle className="w-6 h-6 text-emerald-400" />
           )}
         </div>
         
-        <div className="flex items-center gap-4 text-slate-400 text-sm">
+        <div className={`flex items-center gap-4 text-sm transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-slate-600'
+        }`}>
           <div className="flex items-center gap-1">
             <Play className="w-4 h-4" />
             <span>{lesson.duration}</span>
@@ -134,7 +158,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <div className={`px-3 py-1 rounded-full text-xs font-medium ${
             lesson.completed
               ? 'bg-emerald-500/20 text-emerald-400'
-              : 'bg-slate-700 text-slate-300'
+              : isDark
+                ? 'bg-slate-700 text-slate-300'
+                : 'bg-slate-200 text-slate-600'
           }`}>
             {lesson.completed ? 'Concluída' : 'Não assistida'}
           </div>
