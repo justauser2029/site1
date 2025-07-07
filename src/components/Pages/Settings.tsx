@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { User, Bell, Moon, Sun, Shield, Info, LogOut, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
+import { useAuth } from '../../hooks/useAuth';
 
 const Settings: React.FC = () => {
   const [notifications, setNotifications] = useState(true);
   const { theme, toggleTheme, isDark } = useTheme();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const settingsGroups = [
     {
@@ -59,10 +65,10 @@ const Settings: React.FC = () => {
           <div>
             <h1 className={`text-xl font-bold transition-colors duration-300 ${
               isDark ? 'text-white' : 'text-slate-900'
-            }`}>João Silva</h1>
+            }`}>Cliente Sleep Protocol</h1>
             <p className={`transition-colors duration-300 ${
               isDark ? 'text-slate-400' : 'text-slate-600'
-            }`}>joao.silva@email.com</p>
+            }`}>{user?.email}</p>
           </div>
         </div>
         
@@ -228,11 +234,14 @@ const Settings: React.FC = () => {
 
       {/* Sign Out */}
       <div className="px-6 py-8">
-        <button className={`w-full border rounded-xl p-4 text-left transition-colors ${
-          isDark 
-            ? 'bg-red-500/20 border-red-500/30 hover:bg-red-500/30' 
-            : 'bg-red-50 border-red-200 hover:bg-red-100'
-        }`}>
+        <button 
+          onClick={handleLogout}
+          className={`w-full border rounded-xl p-4 text-left transition-colors ${
+            isDark 
+              ? 'bg-red-500/20 border-red-500/30 hover:bg-red-500/30' 
+              : 'bg-red-50 border-red-200 hover:bg-red-100'
+          }`}
+        >
           <div className="flex items-center gap-3">
             <LogOut className="w-5 h-5 text-red-400" />
             <span className="text-red-400 font-medium">Sair da conta</span>
