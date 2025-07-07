@@ -1,23 +1,60 @@
 import React, { useState } from 'react';
-import { User, Bell, Moon, Sun, Shield, Info, LogOut, ChevronRight } from 'lucide-react';
+import { User, Bell, Moon, Sun, Shield, Info, LogOut, ChevronRight, BellRing, TestTube } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 import { useAuth } from '../../hooks/useAuth';
+import { useNotifications } from '../../hooks/useNotifications';
 
 const Settings: React.FC = () => {
-  const [notifications, setNotifications] = useState(true);
   const { theme, toggleTheme, isDark } = useTheme();
   const { logout, user } = useAuth();
+  const { 
+    notificationSettings, 
+    toggleNotifications, 
+    sendTestNotification,
+    isNotificationSupported,
+    hasPermission 
+  } = useNotifications();
+
+  const [isTogglingNotifications, setIsTogglingNotifications] = useState(false);
 
   const handleLogout = () => {
     logout();
+  };
+
+  const handleToggleNotifications = async () => {
+    setIsTogglingNotifications(true);
+    try {
+      await toggleNotifications();
+    } catch (error) {
+      console.error('Erro ao alterar configurações de notificação:', error);
+    } finally {
+      setIsTogglingNotifications(false);
+    }
+  };
+
+  const handleTestNotification = () => {
+    sendTestNotification();
   };
 
   const settingsGroups = [
     {
       title: 'Conta',
       items: [
-        { id: 'profile', label: 'Perfil', icon: User, action: 'navigate' },
-        { id: 'notifications', label: 'Notificações', icon: Bell, action: 'toggle', value: notifications, setValue: setNotifications }
+        { id: 'profile', label: 'Perfil', icon: User, action: 'navigate' }
+      ]
+    },
+    {
+      title: 'Notificações',
+      items: [
+        { 
+          id: 'notifications', 
+          label: 'Notificações de Progresso', 
+          icon: Bell, 
+          action: 'notification-toggle',
+          description: 'Receba lembretes personalizados sobre seu progresso',
+          value: notificationSettings.enabled,
+          isLoading: isTogglingNotifications
+        }
       ]
     },
     {
@@ -135,7 +172,7 @@ const Settings: React.FC = () => {
                         : 'border-b border-slate-200'
                       : ''
                   } ${
-                    item.action !== 'theme-slider' 
+                    item.action !== 'theme-slider' && item.action !== 'notification-toggle'
                       ? isDark 
                         ? 'hover:bg-slate-800/50 cursor-pointer' 
                         : 'hover:bg-slate-100/50 cursor-pointer'
@@ -158,19 +195,46 @@ const Settings: React.FC = () => {
                     </div>
                   </div>
                   
-                  {item.action === 'toggle' && item.setValue && (
-                    <button
-                      onClick={() => item.setValue(!item.value)}
-                      className={`relative w-12 h-6 rounded-full transition-colors ${
-                        item.value ? 'bg-emerald-500' : isDark ? 'bg-slate-600' : 'bg-slate-300'
-                      }`}
-                    >
-                      <div
-                        className={`absolute w-4 h-4 bg-white rounded-full top-1 transition-transform ${
-                          item.value ? 'translate-x-7' : 'translate-x-1'
-                        }`}
-                      />
-                    </button>
+                  {item.action === 'notification-toggle' && (
+                    <div className="flex items-center gap-3">
+                      {/* Test Notification Button */}
+                      {notificationSettings.enabled && hasPermission && (
+                        <button
+                          onClick={handleTestNotification}
+                          className={`p-2 rounded-lg transition-colors ${
+                            isDark 
+                              ? 'bg-slate-700 hover:bg-slate-600 text-slate-300' 
+                              : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                          }`}
+                          title="Testar notificação"
+                        >
+                          <TestTube className="w-4 h-4" />
+                        </button>
+                      )}
+                      
+                      {/* Toggle Button */}
+                      <button
+                        onClick={handleToggleNotifications}
+                        disabled={isTogglingNotifications || !isNotificationSupported}
+                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                          notificationSettings.enabled ? 'bg-emerald-500' : isDark ? 'bg-slate-600' : 'bg-slate-300'
+                        } ${!isNotificationSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <div
+                          className={`absolute w-4 h-4 bg-white rounded-full top-1 transition-transform flex items-center justify-center ${
+                            notificationSettings.enabled ? 'translate-x-7' : 'translate-x-1'
+                          }`}
+                        >
+                          {isTogglingNotifications ? (
+                            <div className="w-2 h-2 border border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+                          ) : notificationSettings.enabled ? (
+                            <BellRing className="w-2 h-2 text-emerald-600" />
+                          ) : (
+                            <Bell className="w-2 h-2 text-slate-400" />
+                          )}
+                        </div>
+                      </button>
+                    </div>
                   )}
                   
                   {item.action === 'theme-slider' && (
@@ -230,6 +294,65 @@ const Settings: React.FC = () => {
             </div>
           </div>
         ))}
+
+        {/* Notification Status Info */}
+        {notificationSettings.enabled && (
+          <div className={`rounded-2xl p-6 border transition-colors duration-300 ${
+            isDark 
+              ? 'bg-emerald-500/10 border-emerald-500/30' 
+              : 'bg-emerald-50 border-emerald-200'
+          }`}>
+            <div className="flex items-start gap-3">
+              <BellRing className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className={`font-medium mb-2 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}>Notificações Ativadas</h3>
+                <div className={`text-sm space-y-1 transition-colors duration-300 ${
+                  isDark ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  <p>✅ Lembretes de progresso incompleto</p>
+                  <p>✅ Alertas de inatividade (após 24h)</p>
+                  <p>✅ Mensagens motivacionais personalizadas</p>
+                </div>
+                {!hasPermission && (
+                  <div className={`mt-3 p-3 rounded-lg border transition-colors duration-300 ${
+                    isDark 
+                      ? 'bg-amber-500/10 border-amber-500/30' 
+                      : 'bg-amber-50 border-amber-200'
+                  }`}>
+                    <p className="text-amber-400 text-sm">
+                      ⚠️ Permissão de notificação necessária. Clique no botão para ativar.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isNotificationSupported && (
+          <div className={`rounded-2xl p-6 border transition-colors duration-300 ${
+            isDark 
+              ? 'bg-red-500/10 border-red-500/30' 
+              : 'bg-red-50 border-red-200'
+          }`}>
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className={`font-medium mb-2 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}>Notificações Não Suportadas</h3>
+                <p className={`text-sm transition-colors duration-300 ${
+                  isDark ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  Seu navegador não suporta notificações push. Para receber lembretes, 
+                  use um navegador moderno como Chrome, Firefox ou Safari.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sign Out */}
