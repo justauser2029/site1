@@ -5,7 +5,7 @@ export const modules: Module[] = [
     id: 'military-sleep-technique',
     title: 'Técnica Militar de Sono',
     description: 'Aprenda a dormir em 2 minutos como os soldados',
-    coverImage: 'https://i.imgur.com/1Zk2RVB.jpg',
+    coverImage: 'https://i.imgur.com/xgEJgL3.jpg',
     lessons: [
       {
         id: 'lesson-1',
@@ -48,7 +48,7 @@ export const modules: Module[] = [
     id: 'deep-sleep-mastery',
     title: 'Domínio do Sono Profundo',
     description: 'Técnicas avançadas para um sono restaurador',
-    coverImage: 'https://i.imgur.com/boAFPvG.jpg',
+    coverImage: 'https://i.imgur.com/04ajKAs.jpg',
     lessons: [
       {
         id: 'lesson-1',
@@ -91,7 +91,7 @@ export const modules: Module[] = [
     id: 'sleep-optimization',
     title: 'Otimização do Sono',
     description: 'Maximize a qualidade do seu descanso',
-    coverImage: 'https://i.imgur.com/E9T08EF.jpg',
+    coverImage: 'https://i.imgur.com/3EHixgR.jpg',
     lessons: [
       {
         id: 'lesson-1',
