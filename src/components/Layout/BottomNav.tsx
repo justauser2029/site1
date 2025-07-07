@@ -1,5 +1,6 @@
 import React from 'react';
 import { Home, Play, BookOpen, Settings } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 
 interface BottomNavProps {
   activeTab: string;
@@ -7,6 +8,8 @@ interface BottomNavProps {
 }
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
+  const { theme } = useTheme();
+  
   const tabs = [
     { id: 'home', label: 'Principal', icon: Home },
     { id: 'continue', label: 'Continuar', icon: Play },
@@ -25,7 +28,11 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 px-4 py-2 z-50">
+    <nav className={`fixed bottom-0 left-0 right-0 px-4 py-2 z-50 transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'bg-slate-900 border-t border-slate-800' 
+        : 'bg-white border-t border-slate-200 shadow-lg'
+    }`}>
       <div className="flex justify-around items-center max-w-md mx-auto">
         {tabs.map(({ id, label, icon: Icon }) => (
           <button
@@ -33,8 +40,12 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
             onClick={() => handleTabClick(id)}
             className={`flex flex-col items-center p-2 rounded-lg transition-all duration-200 ${
               activeTab === id
-                ? 'text-emerald-400 bg-slate-800'
-                : 'text-slate-400 hover:text-slate-300'
+                ? theme === 'dark'
+                  ? 'text-emerald-400 bg-slate-800'
+                  : 'text-emerald-600 bg-emerald-50'
+                : theme === 'dark'
+                  ? 'text-slate-400 hover:text-slate-300'
+                  : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             <Icon className="w-5 h-5 mb-1" />

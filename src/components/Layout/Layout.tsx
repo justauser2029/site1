@@ -5,11 +5,13 @@ import ContinueWatching from '../Pages/ContinueWatching';
 import MoreContent from '../Pages/MoreContent';
 import Settings from '../Pages/Settings';
 import Module from '../Pages/Module';
+import { useTheme } from '../../hooks/useTheme';
 
 const Layout: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState<number>(0);
+  const { theme } = useTheme();
 
   const handleTabChange = (tab: string) => {
     // Se estamos em um módulo e clicando em outra aba, primeiro sair do módulo
@@ -56,7 +58,11 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pb-20">
+    <div className={`min-h-screen transition-colors duration-300 pb-20 ${
+      theme === 'dark' 
+        ? 'bg-slate-950 text-white' 
+        : 'bg-slate-50 text-slate-900'
+    }`}>
       <main className="relative">
         {renderContent()}
       </main>
